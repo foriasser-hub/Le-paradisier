@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Le Paradisier Manager</title>
+    <meta
+      name="description"
+      content="Le Paradisier Manager — Gestion restaurant, appartements et factures."
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- ====== SIDEBAR ====== -->
+      <aside class="sidebar" id="sidebar">
+        <div class="brand">
+          <div class="brand-mark">LP</div>
+          <div class="brand-text">
+            <h1>Le Paradisier</h1>
+            <p>Hôtel · Restaurant · Résidences</p>
+          </div>
+        </div>
+
+        <nav class="nav" id="nav">
+          <a class="nav-item" data-route="dashboard">
+            <span class="nav-icon">◇</span> Tableau de bord
+          </a>
+          <a class="nav-item" data-route="entries">
+            <span class="nav-icon">↘</span> Entrées d’argent
+          </a>
+          <a class="nav-item" data-route="expenses">
+            <span class="nav-icon">↗</span> Sorties / Dépenses
+          </a>
+          <a class="nav-item" data-route="orders">
+            <span class="nav-icon">▤</span> Commandes
+          </a>
+          <a class="nav-item" data-route="deliveries">
+            <span class="nav-icon">▷</span> Livraisons
+          </a>
+          <a class="nav-item" data-route="apartments">
+            <span class="nav-icon">⌂</span> Appartements
+          </a>
+          <a class="nav-item" data-route="invoices">
+            <span class="nav-icon">≡</span> Factures
+          </a>
+          <a class="nav-item" data-route="reports">
+            <span class="nav-icon">∿</span> Rapports
+          </a>
+          <a class="nav-item" data-route="settings">
+            <span class="nav-icon">⚙</span> Paramètres
+          </a>
+          <a class="nav-item" data-route="backup">
+            <span class="nav-icon">⇣</span> Sauvegarde
+          </a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <p class="version">v1.0 · Local</p>
+        </div>
+      </aside>
+
+      <!-- ====== MAIN ====== -->
+      <main class="main">
+        <!-- ====== HEADER ====== -->
+        <header class="topbar">
+          <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+          <div class="hello">
+            <h2 id="helloTitle">Bonjour, Gérant 👋</h2>
+            <p id="helloSubtitle">Aperçu de l’activité</p>
+          </div>
+
+          <div class="topbar-actions">
+            <label class="period">
+              <span>Période</span>
+              <select id="periodFilter">
+                <option value="today">Aujourd’hui</option>
+                <option value="week">Cette semaine</option>
+                <option value="month" selected>Ce mois</option>
+                <option value="year">Cette année</option>
+              </select>
+            </label>
+            <button class="btn btn-gold" id="exportReport">Exporter rapport</button>
+            <div class="profile">
+              <div class="avatar">G</div>
+              <div class="profile-meta">
+                <strong>Gérant</strong>
+                <span>Le Paradisier</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- ====== VIEWS ====== -->
+        <section class="view" id="view"></section>
+      </main>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-backdrop" id="modal" hidden>
+      <div class="modal">
+        <header class="modal-head">
+          <h3 id="modalTitle">Titre</h3>
+          <button class="modal-close" id="modalClose" aria-label="Fermer">×</button>
+        </header>
+        <div class="modal-body" id="modalBody"></div>
+        <footer class="modal-foot" id="modalFoot"></footer>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast" hidden></div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
