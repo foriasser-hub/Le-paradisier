@@ -6,8 +6,10 @@
     <title>Le Paradisier Manager</title>
     <meta
       name="description"
-      content="Le Paradisier Manager — Gestion restaurant, appartements et factures."
+      content="Le Paradisier Manager — Gestion premium pour hôtel, restaurant et résidences."
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
@@ -27,64 +29,92 @@
         </div>
 
         <nav class="nav" id="nav">
+          <span class="nav-section">Pilotage</span>
           <a class="nav-item" data-route="dashboard">
-            <span class="nav-icon">◇</span> Tableau de bord
-          </a>
-          <a class="nav-item" data-route="entries">
-            <span class="nav-icon">↘</span> Entrées d’argent
-          </a>
-          <a class="nav-item" data-route="expenses">
-            <span class="nav-icon">↗</span> Sorties / Dépenses
-          </a>
-          <a class="nav-item" data-route="orders">
-            <span class="nav-icon">▤</span> Commandes
-          </a>
-          <a class="nav-item" data-route="deliveries">
-            <span class="nav-icon">▷</span> Livraisons
-          </a>
-          <a class="nav-item" data-route="apartments">
-            <span class="nav-icon">⌂</span> Appartements
-          </a>
-          <a class="nav-item" data-route="invoices">
-            <span class="nav-icon">≡</span> Factures
+            <span class="nav-icon" data-icon="dashboard"></span>
+            <span>Tableau de bord</span>
           </a>
           <a class="nav-item" data-route="reports">
-            <span class="nav-icon">∿</span> Rapports
+            <span class="nav-icon" data-icon="chart"></span>
+            <span>Rapports</span>
           </a>
+
+          <span class="nav-section">Trésorerie</span>
+          <a class="nav-item" data-route="entries">
+            <span class="nav-icon" data-icon="trendingUp"></span>
+            <span>Entrées d’argent</span>
+          </a>
+          <a class="nav-item" data-route="expenses">
+            <span class="nav-icon" data-icon="receipt"></span>
+            <span>Sorties / Dépenses</span>
+          </a>
+          <a class="nav-item" data-route="invoices">
+            <span class="nav-icon" data-icon="fileText"></span>
+            <span>Factures</span>
+          </a>
+
+          <span class="nav-section">Activité</span>
+          <a class="nav-item" data-route="orders">
+            <span class="nav-icon" data-icon="shoppingBag"></span>
+            <span>Commandes</span>
+          </a>
+          <a class="nav-item" data-route="deliveries">
+            <span class="nav-icon" data-icon="truck"></span>
+            <span>Livraisons</span>
+          </a>
+          <a class="nav-item" data-route="apartments">
+            <span class="nav-icon" data-icon="bed"></span>
+            <span>Appartements</span>
+          </a>
+
+          <span class="nav-section">Système</span>
           <a class="nav-item" data-route="settings">
-            <span class="nav-icon">⚙</span> Paramètres
+            <span class="nav-icon" data-icon="settings"></span>
+            <span>Paramètres</span>
           </a>
           <a class="nav-item" data-route="backup">
-            <span class="nav-icon">⇣</span> Sauvegarde
+            <span class="nav-icon" data-icon="database"></span>
+            <span>Sauvegarde</span>
           </a>
         </nav>
 
         <div class="sidebar-footer">
-          <p class="version">v1.0 · Local</p>
+          <p class="version">
+            Le Paradisier Manager
+            <small>v1.1 · Édition Premium</small>
+          </p>
         </div>
       </aside>
+
+      <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
       <!-- ====== MAIN ====== -->
       <main class="main">
         <!-- ====== HEADER ====== -->
         <header class="topbar">
-          <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+          <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+            <span class="icon" data-icon="menu"></span>
+          </button>
           <div class="hello">
-            <h2 id="helloTitle">Bonjour, Gérant 👋</h2>
+            <h2 id="helloTitle">Bonjour, Gérant</h2>
             <p id="helloSubtitle">Aperçu de l’activité</p>
           </div>
 
           <div class="topbar-actions">
             <label class="period">
+              <span class="icon" data-icon="calendar"></span>
               <span>Période</span>
               <select id="periodFilter">
                 <option value="today">Aujourd’hui</option>
-                <option value="week">Cette semaine</option>
+                <option value="week">7 jours</option>
                 <option value="month" selected>Ce mois</option>
-                <option value="year">Cette année</option>
+                <option value="year">Année</option>
               </select>
             </label>
-            <button class="btn btn-gold" id="exportReport">Exporter rapport</button>
+            <button class="btn btn-gold" id="exportReport">
+              <span class="icon" data-icon="download"></span>
+              Exporter rapport
+            </button>
             <div class="profile">
               <div class="avatar">G</div>
               <div class="profile-meta">
@@ -102,10 +132,14 @@
 
     <!-- Modal -->
     <div class="modal-backdrop" id="modal" hidden>
-      <div class="modal">
+      <div class="modal" id="modalCard">
         <header class="modal-head">
+          <span class="gold-bar"></span>
           <h3 id="modalTitle">Titre</h3>
-          <button class="modal-close" id="modalClose" aria-label="Fermer">×</button>
+          <span class="modal-sub" id="modalSub"></span>
+          <button class="modal-close" id="modalClose" aria-label="Fermer">
+            <span class="icon" data-icon="close"></span>
+          </button>
         </header>
         <div class="modal-body" id="modalBody"></div>
         <footer class="modal-foot" id="modalFoot"></footer>
