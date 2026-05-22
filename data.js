@@ -1,14 +1,16 @@
 /* ===========================================================
    Le Paradisier Manager — Persistence layer (data.js)
    Stockage local via localStorage, données de démonstration au
-   premier lancement.
+   premier lancement. Migration douce v1 -> v1.1 (modèle Dépense étendu).
    =========================================================== */
 
 const STORAGE_KEY = "paradisier.manager.v1";
+const SCHEMA_VERSION = 2;
 
 const DEMO_DATA = {
   meta: {
     createdAt: new Date().toISOString(),
+    schema: SCHEMA_VERSION,
     invoiceCounter: 7,
   },
   entries: [
@@ -29,16 +31,16 @@ const DEMO_DATA = {
     { id: id(), date: today(-25), label: "Vente restaurant", category: "Restaurant", amount: 365000, paid: true },
   ],
   expenses: [
-    { id: id(), date: today(0), label: "Achat marchandises", category: "Approvisionnement", amount: 150000 },
-    { id: id(), date: today(-1), label: "Salaire personnel", category: "Salaires", amount: 500000 },
-    { id: id(), date: today(-2), label: "Électricité", category: "Charges", amount: 120000 },
-    { id: id(), date: today(-3), label: "Transport", category: "Logistique", amount: 80000 },
-    { id: id(), date: today(-4), label: "Maintenance", category: "Entretien", amount: 60000 },
-    { id: id(), date: today(-7), label: "Achat boissons", category: "Approvisionnement", amount: 220000 },
-    { id: id(), date: today(-10), label: "Eau", category: "Charges", amount: 75000 },
-    { id: id(), date: today(-14), label: "Internet & téléphonie", category: "Charges", amount: 90000 },
-    { id: id(), date: today(-18), label: "Produits ménagers", category: "Entretien", amount: 55000 },
-    { id: id(), date: today(-22), label: "Achat marchandises", category: "Approvisionnement", amount: 180000 },
+    { id: id(), date: today(0), label: "Achat marchandises (légumes & viande)", category: "Approvisionnement", amount: 150000, payment: "Espèces", supplier: "Marché d’Analakely", note: "Livraison cuisine matin" },
+    { id: id(), date: today(-1), label: "Salaires personnel — quinzaine", category: "Salaires", amount: 500000, payment: "Virement", supplier: "Personnel", note: "Quinzaine du 8 au 22" },
+    { id: id(), date: today(-2), label: "Facture électricité Jirama", category: "Charges", amount: 120000, payment: "Mobile Money", supplier: "Jirama", note: "Mai 2026" },
+    { id: id(), date: today(-3), label: "Carburant véhicule de livraison", category: "Logistique", amount: 80000, payment: "Carte", supplier: "Galana", note: "" },
+    { id: id(), date: today(-4), label: "Maintenance climatiseur A6", category: "Entretien", amount: 60000, payment: "Espèces", supplier: "FroidPro Ivandry", note: "Compresseur défaillant" },
+    { id: id(), date: today(-7), label: "Réassort boissons restaurant", category: "Approvisionnement", amount: 220000, payment: "Virement", supplier: "Star SA", note: "" },
+    { id: id(), date: today(-10), label: "Facture eau Jirama", category: "Charges", amount: 75000, payment: "Mobile Money", supplier: "Jirama", note: "" },
+    { id: id(), date: today(-14), label: "Internet & téléphonie pro", category: "Charges", amount: 90000, payment: "Virement", supplier: "Telma", note: "Forfait fibre + flotte" },
+    { id: id(), date: today(-18), label: "Produits ménagers et linge", category: "Entretien", amount: 55000, payment: "Espèces", supplier: "Score", note: "" },
+    { id: id(), date: today(-22), label: "Achat marchandises sec", category: "Approvisionnement", amount: 180000, payment: "Espèces", supplier: "Shoprite", note: "" },
   ],
   orders: [
     { id: "CMD-00045", date: today(0), client: "Table 3", items: "Menu du jour x2", status: "En préparation", amount: 120000 },
@@ -111,16 +113,31 @@ const DB = {
         return this.state;
       }
       this.state = JSON.parse(raw);
-      // forward-compat: ensure all keys exist
+      // forward-compat: ensure all top-level keys exist
       for (const k of Object.keys(DEMO_DATA)) {
         if (!(k in this.state)) this.state[k] = DEMO_DATA[k];
       }
+      this.migrate();
       return this.state;
     } catch (e) {
       console.warn("DB load error, restoring demo:", e);
       this.state = JSON.parse(JSON.stringify(DEMO_DATA));
       this.save();
       return this.state;
+    }
+  },
+
+  migrate() {
+    const m = this.state.meta || (this.state.meta = { schema: 1 });
+    if ((m.schema || 1) < 2) {
+      // Migration v1 -> v2 : ajoute payment / supplier / note aux dépenses existantes
+      for (const e of this.state.expenses) {
+        if (e.payment === undefined) e.payment = "Espèces";
+        if (e.supplier === undefined) e.supplier = "";
+        if (e.note === undefined) e.note = "";
+      }
+      m.schema = 2;
+      this.save();
     }
   },
 
@@ -141,13 +158,13 @@ const DB = {
   importJSON(text) {
     const parsed = JSON.parse(text);
     if (!parsed || typeof parsed !== "object") throw new Error("Format invalide");
-    // light validation
     const requiredKeys = ["entries", "expenses", "orders", "deliveries", "apartments", "invoices", "settings"];
     for (const k of requiredKeys) {
       if (!(k in parsed)) throw new Error(`Champ manquant: ${k}`);
     }
     this.state = parsed;
     this.save();
+    this.migrate();
     return this.state;
   },
 
